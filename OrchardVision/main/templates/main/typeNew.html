@@ -1,0 +1,9 @@
+{% extends 'main/infoBase.html' %}
+
+{% block content %}
+
+    {% with url=url|default:'broker:newType' placeholder="Gatunek" %}
+        {{ block.super }}
+    {% endwith %}
+    
+{% endblock content %}

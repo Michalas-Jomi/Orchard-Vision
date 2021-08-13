@@ -1,7 +1,17 @@
-<form method="POST" action={% url "broker:editType" %}>
-    {% csrf_token %}
+{% extends 'main/typeNew.html' %}
+
+{% block content %}
+
+    {% with url='broker:editType' name_value=type.name note_value=type.note  %}
+        {{ block.super }}
+        <a class="model_url" href={% url "broker:deleteType" type.id %}><input class="delete" type="button" value="usuń"></a>
+    {% endwith %}
+
+{% endblock content %}
+
+{% block interior %}
+
     <input type="hidden" name="id" value="{{ type.id }}">
-    <label>Nazwa:<input name="name" value="{{ type.name }}"></label>
-    <label>Notatka<textarea name="note">{{ type.note }}</textarea></label>
-    <input type="submit" value="Zatwierdz">
-</form>
+    {{ block.super }}
+    
+{% endblock interior %}

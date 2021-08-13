@@ -33,7 +33,7 @@ class Type(models.Model):
     get = _get
 
 class Variant(models.Model):
-    type = models.ForeignKey(Type, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, on_delete=models.PROTECT)
     name = models.TextField()
     harvest_time = models.SmallIntegerField(null=True)# I połowa lipca | II Połowa śierpnia...
     note = models.TextField(default='')
@@ -41,7 +41,7 @@ class Variant(models.Model):
     get = _get
 
 class Tree(models.Model):
-    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    variant = models.ForeignKey(Variant, on_delete=models.PROTECT)
     latitude = models.FloatField()
     longitude = models.FloatField()
     planting_data = models.DateField()

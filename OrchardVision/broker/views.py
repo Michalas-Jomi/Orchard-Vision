@@ -32,34 +32,10 @@ def needPost(func):
     return f    
 
 
-class Edit:
-    __slots__ = ('model', 'pre')
 
-    def __init__(self, model):
-        self.model = model
-        self.pre = str(model)
-    def __enter__(self):
-        pass
-    def __exit__(self, type, value, traceback):
-        models.Actions.objects.create(type="edit " + self.model.__class__.__name__, note=self.pre + " -> " + str(self.model))
+### Views
 
-
-@csrf_exempt
-@needPost
-def insert(request : HttpRequest):
-    longitude = float(_get_from_post(request, 'longitude'))
-    latitude = float(_get_from_post(request, 'latitude'))
-    type, variant, note = _get_tree_from_post(request)
-    age = int(_get_from_post(request, 'age'))
-
-    today = date.today()
-
-    tree = models.Tree.objects.create(variant=variant, latitude=latitude, longitude=longitude,
-            planting_data=today.replace(year = today.year - age), note=note)
-
-    models.Actions.objects.create(type='insert Tree', note=str(tree))
-
-    return HttpResponse()
+## Universal
 
 @csrf_exempt
 def initinfo(request : HttpRequest):
@@ -81,22 +57,19 @@ def initinfo(request : HttpRequest):
     return HttpResponse(json.dumps(_json))
 
 
-@needPost
-def editTree(request : HttpRequest):
-    planting_date = _get_from_post(request, 'planting_data')
-    type, variant, note = _get_tree_from_post(request)
-    id = _get_from_post(request, 'id')
+## Edit
 
-    tree = models.Tree.objects.get(pk=id)
+class Edit:
+    __slots__ = ('model', 'pre')
 
-    with Edit(tree):
-        tree.variant = variant
-        tree.planting_data = planting_date
-        tree.note = note
-        
-        tree.save()
+    def __init__(self, model):
+        self.model = model
+        self.pre = str(model)
+    def __enter__(self):
+        pass
+    def __exit__(self, type, value, traceback):
+        models.Actions.objects.create(type="edit " + self.model.__class__.__name__, note=self.pre + " -> " + str(self.model))
 
-    return HttpResponse()
 @needPost
 def editType(request : HttpRequest):
     id = _get_from_post(request, 'id')
@@ -130,6 +103,80 @@ def editVariant(request : HttpRequest):
         variant.note = note
 
         variant.save()
+
+    return HttpResponse()
+@needPost
+def editTree(request : HttpRequest):
+    planting_date = _get_from_post(request, 'planting_data')
+    type, variant, note = _get_tree_from_post(request)
+    id = _get_from_post(request, 'id')
+
+    tree = models.Tree.objects.get(pk=id)
+
+    with Edit(tree):
+        tree.variant = variant
+        tree.planting_data = planting_date
+        tree.note = note
+        
+        tree.save()
+
+    return HttpResponse()
+
+
+## Delete
+
+def deleteFactory(model):
+    def f(request : HttpRequest, pk : int):
+        try:
+            model.objects.get(pk=pk).delete()
+            return HttpResponse('1')
+        except:
+            return HttpResponse('0')
+    return f
+
+deleteType    = deleteFactory(models.Type)
+deleteVariant = deleteFactory(models.Variant)
+deleteTree    = deleteFactory(models.Tree)
+    
+
+## New
+
+@needPost
+def newType(request : HttpRequest):
+    name = _get_from_post(request, 'name')
+    note = _get_from_post(request, 'note')
+
+    try:
+        models.Type.objects.create(name=name, note=note)
+        return HttpResponse()
+    except:
+        raise HttpResponseBadRequest()
+@needPost
+def newVariant(request : HttpRequest):
+    name = _get_from_post(request, 'name')
+    type = _get_from_post(request, 'type')
+    note = _get_from_post(request, 'note')
+
+    try:
+        type = models.Type.objects.get(pk=type)
+        models.Variant.objects.create(name=name, type=type, note=note)
+        return HttpResponse()
+    except:
+        raise HttpResponseBadRequest()
+@csrf_exempt
+@needPost
+def newTree(request : HttpRequest):
+    longitude = float(_get_from_post(request, 'longitude'))
+    latitude = float(_get_from_post(request, 'latitude'))
+    type, variant, note = _get_tree_from_post(request)
+    age = int(_get_from_post(request, 'age'))
+
+    today = date.today()
+
+    tree = models.Tree.objects.create(variant=variant, latitude=latitude, longitude=longitude,
+            planting_data=today.replace(year = today.year - age), note=note)
+
+    models.Actions.objects.create(type='insert Tree', note=str(tree))
 
     return HttpResponse()
 

@@ -1,14 +1,17 @@
-<form method="POST" action={% url "broker:editVariant" %}>
-    {% csrf_token %}
+{% extends 'main/variantNew.html' %}
+
+{% block content %}
+
+    {% with url='broker:editVariant' name_value=variant.name note_value=variant.note  %}
+        {{ block.super }}
+        <a class="model_url" href={% url "broker:deleteVariant" variant.id %}><input class="delete" type="button" value="usuń"></a>
+    {% endwith %}
+
+{% endblock content %}
+
+{% block interior %}
+
     <input type="hidden" name="id" value="{{ variant.id }}">
-    <label>Nazwa:<input name="name" value="{{ variant.name }}"></label>
-    <label>Gatunek:
-        <select name="type" value="{{ variant.type.name }}">
-            {% for type in types %}
-                <option value="{{ type.id }}">{{ type.name }}</option>
-            {% endfor %}
-        </select>
-    </label>
-    <label>Notatka<textarea name="note">{{ variant.note }}</textarea></label>
-    <input type="submit" value="Zatwierdz">
-</form>
+    {{ block.super }}
+    
+{% endblock interior %}

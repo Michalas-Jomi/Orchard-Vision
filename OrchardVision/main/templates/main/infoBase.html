@@ -1,0 +1,14 @@
+{# context need "placeholder", "url" #}
+
+{% block content %}
+
+    <form method="POST" action={% url url %}>
+        {% csrf_token %}
+        <label>Nazwa:<input name="name" placeholder={{ placeholder }} value={{ name_value|addslashes }}></label>
+        {% block interior %}{% endblock interior %}
+        <label>Notatka<textarea name="note">{{ note_value }}</textarea></label>
+        <input type="submit" value="Zatwierdz">
+    </form>
+    
+{% endblock content %}
+

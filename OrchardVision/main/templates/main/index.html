@@ -34,4 +34,10 @@
     </nav>
     <div style="clear: both;"></div>
     <div id="info"></div>
+
+    <div>
+        <a class="model_url" href= {% url 'main:typeNew'    %}><input type="button" value="dodaj Gatunek"></a>
+        <a class="model_url" href= {% url 'main:variantNew' %}><input type="button" value="dodaj Odmiane"></a>
+    </div>
+
 {% endblock content %}

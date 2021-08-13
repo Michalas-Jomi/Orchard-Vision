@@ -1,4 +1,6 @@
+from abc import abstractmethod
 from django.views.generic import ListView, DetailView
+from django.views.generic.base import TemplateView
 
 from broker import models
 
@@ -18,10 +20,13 @@ class IndexView(ListView):
         return kwargs
 
 
-class TypeView(DetailView):
-    template_name = "main/type.html"
+
+class TypeEditView(DetailView):
+    template_name = "main/typeEdit.html"
     context_object_name = "type"
     model = models.Type
+class TypeView(TypeEditView):
+    template_name = "main/type.html"
 
     def get_context_data(self, **kwargs):
         kwargs =  super().get_context_data(**kwargs)
@@ -33,31 +38,35 @@ class TypeView(DetailView):
         kwargs['trees'] = trees.count()
 
         return kwargs
-class TypeEditView(DetailView):
-    template_name = "main/typeEdit.html"
-    context_object_name = "type"
-    model = models.Type
     
 
-class VariantView(DetailView):
-    template_name = "main/variant.html"
+class abstractVariantView(DetailView):
     context_object_name = "variant"
     model = models.Variant
 
     def get_context_data(self, **kwargs):
         kwargs =  super().get_context_data(**kwargs)
-
-        variant = kwargs[self.context_object_name]
-        kwargs['trees'] = models.Tree.objects.filter(variant=variant).count()
-
+        kwargs.update(self.getTrees(**kwargs))
         return kwargs
-class VariantEditView(DetailView):
+    @abstractmethod
+    def getTrees(self, **kwargs):
+        pass
+class VariantView(abstractVariantView):
+    template_name = "main/variant.html"
+
+    def getTrees(self, **kwargs):
+        variant = kwargs[self.context_object_name]
+        return {'trees': models.Tree.objects.filter(variant=variant).count()}
+class VariantEditView(abstractVariantView):
     template_name = "main/variantEdit.html"
-    context_object_name = "variant"
-    model = models.Variant
 
-    def get_context_data(self, **kwargs):
-        res = super().get_context_data(**kwargs)
-        res.update({'types': models.Type.objects.all()})
-        return res
+    def getTrees(self, **kwargs):
+        return {'types': models.Type.objects.all()}
 
+
+class TypeNewView(TemplateView):
+    template_name = "main/typeNew.html"
+class VariantNewView(ListView):
+    template_name = "main/variantNew.html"
+    context_object_name = "types"
+    model = models.Type
