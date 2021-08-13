@@ -1,0 +1,9 @@
+table {
+    color: black;
+    text-align: center;
+    column-span: 0;
+}
+input,
+textarea {
+    width: 200px;
+}

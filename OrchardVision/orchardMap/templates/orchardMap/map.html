@@ -1,0 +1,26 @@
+{% extends 'orchardMap/base.html' %}
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href={% static 'orchardMap/map.css' %}/>
+{% endblock head %}
+
+{% block js %}
+<script src={% static 'orchardMap/Tree.js' %}></script>
+<script src={% static 'orchardMap/map.js' %}></script>
+<script src={% static 'Utils.js' %}></script>
+<script>
+    const treeMarkerUrl = '{% static 'orchardMap/img/treeMarker.png' %}'
+
+    const trees = []
+    {% for tree in trees %}
+        trees.push(new Tree({{ tree.id }}, '{{ tree.variant.name|safe|addslashes }}', {{ tree.latitude }}, {{ tree.longitude }}));
+    {% endfor %}
+</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=drawing&callback=initMap"></script>
+{% endblock js %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock content %}

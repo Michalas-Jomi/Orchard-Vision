@@ -1,0 +1,17 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <link rel="stylesheet" href={% static 'main.css' %}/>
+    <title>{% block title %}Orchard Vision{% endblock title %}</title>
+    {% block js %}{% endblock js %}
+    {% block head %}{% endblock head %}
+</head>
+<body>
+    {% block body %}
+    
+    {% endblock body %}
+</body>
+</html>

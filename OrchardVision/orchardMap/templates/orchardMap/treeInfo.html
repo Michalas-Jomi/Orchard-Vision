@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href={% static 'orchardMap/treeInfo.css' %}/>
+{% endblock head %}
+{% block body %}
+    <main>
+        <form method="POST" action={% url 'broker:editTree' %}>
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ tree.id }}">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Gatunek:</td>
+                        <td><input name="type" value="{{ tree.variant.type.name }}"></td>
+                    </tr>
+                    <tr>
+                        <td>Odmiana:</td>
+                        <td><input name="variant" value="{{ tree.variant.name }}"></td>
+                    </tr>
+                    <tr>
+                        <td>Zasadzono:</td>
+                        <td><input name="planting_data" type="date" value="{{ tree.planting_data|date:"Y-m-d" }}"></td>
+                    </tr>
+                    <tr>
+                        <td>Notatka:</td>
+                        <td><textarea  name="note">{{ tree.note }}</textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="Zapisz">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </main>
+{% endblock body %}
