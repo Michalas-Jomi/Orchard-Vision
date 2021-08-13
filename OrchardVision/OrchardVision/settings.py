@@ -41,6 +41,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'main.apps.MainConfig',
     'orchardMap.apps.OrchardmapConfig',
     'broker.apps.BrokerConfig',
     'django_google_maps',

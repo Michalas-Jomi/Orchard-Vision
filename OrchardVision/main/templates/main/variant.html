@@ -1,0 +1,6 @@
+{% load main.utils %}
+
+<h3>{{ variant.name }}</h3>
+Gatunek: {{ variant.type|model }}
+</br>
+notatki: {{ variant.note|default:"Brak" }}

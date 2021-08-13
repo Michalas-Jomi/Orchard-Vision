@@ -20,9 +20,10 @@ from django.urls import path, include
 from django.urls.conf import re_path
 
 urlpatterns = [
+    re_path(r'favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico', permanent=True)),
     path('admin/', admin.site.urls),
     path('broker/', include('broker.urls')),
     path('map/', include('orchardMap.urls')),
-    re_path(r'favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico', permanent=True))
+    path('', include('main.urls')),
 ]
  

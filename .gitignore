@@ -1,0 +1,5 @@
+**/__pycache__/**
+venv/**
+/start.bat
+**/*.sqlite3
+**/OrchardVision/settings.json

@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+{% load main.utils %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href={% static 'main/index.css' %}/>
+{% endblock head %}
+
+{% block js %}
+    <script src={% static 'main/index.js' %}></script>
+{% endblock js %}
+
+{% block content %}
+    {% regroup variants by type as types %}
+    <nav>
+        <ul>
+        {% for type in types %}
+            <li>{{ type.grouper|model }}
+            <ul>
+            {% for variant in type.list %}
+                <li>
+                    {{ variant|model }}
+                </li>
+            {% endfor %}
+            </ul>
+            </li>
+        {% endfor %}
+        </ul>
+    </nav>
+    <div id="info"></div>
+{% endblock content %}

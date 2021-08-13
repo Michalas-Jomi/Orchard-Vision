@@ -6,3 +6,15 @@ html {
 body {
     background-color: rgb(13, 98, 58);
 }
+
+a:link,
+a:visited {
+    color:rgb(175, 139, 21);
+    text-decoration: none;
+}
+a:hover {
+    color: rgb(212, 169, 25)
+}
+a:active {
+    color: rgb(255, 196, 0)
+}
