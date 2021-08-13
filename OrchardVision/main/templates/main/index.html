@@ -13,11 +13,11 @@
 {% endblock js %}
 
 {% block content %}
-    {% regroup variants by type as types %}
-    <nav>
+    {% regroup variants by type as types_list %}
+    <nav class="types">
         <ul>
-        {% for type in types %}
-            <li>{{ type.grouper|model }}
+        {% for type in types_list %}
+            <li class="type">{{ type.grouper|model }}
             <ul>
             {% for variant in type.list %}
                 <li>
@@ -27,7 +27,11 @@
             </ul>
             </li>
         {% endfor %}
+        {% for type in empty_types %}
+            <li class="type">{{ type|model }}</li>
+        {% endfor %}
         </ul>
     </nav>
+    <div style="clear: both;"></div>
     <div id="info"></div>
 {% endblock content %}

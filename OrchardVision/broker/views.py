@@ -24,13 +24,29 @@ def _get_tree_from_post(request):
 
     return type, variant, note
 
+def needPost(func):
+    def f(request, *args, **kwargs):
+        if (len(request.POST) == 0):
+            raise Http404()
+        return func(request, *args, **kwargs)
+    return f    
+
+
+class Edit:
+    __slots__ = ('model', 'pre')
+
+    def __init__(self, model):
+        self.model = model
+        self.pre = str(model)
+    def __enter__(self):
+        pass
+    def __exit__(self, type, value, traceback):
+        models.Actions.objects.create(type="edit " + self.model.__class__.__name__, note=self.pre + " -> " + str(self.model))
 
 
 @csrf_exempt
+@needPost
 def insert(request : HttpRequest):
-    if (len(request.POST) == 0):
-        raise Http404()
-    
     longitude = float(_get_from_post(request, 'longitude'))
     latitude = float(_get_from_post(request, 'latitude'))
     type, variant, note = _get_tree_from_post(request)
@@ -64,21 +80,56 @@ def initinfo(request : HttpRequest):
 
     return HttpResponse(json.dumps(_json))
 
-def editTree(request : HttpRequest):
-    if (len(request.POST) == 0):
-        raise Http404()
 
+@needPost
+def editTree(request : HttpRequest):
     planting_date = _get_from_post(request, 'planting_data')
     type, variant, note = _get_tree_from_post(request)
     id = _get_from_post(request, 'id')
 
     tree = models.Tree.objects.get(pk=id)
 
-    tree.variant = variant
-    tree.planting_data = planting_date
-    tree.note = note
+    with Edit(tree):
+        tree.variant = variant
+        tree.planting_data = planting_date
+        tree.note = note
+        
+        tree.save()
 
-    tree.save()
+    return HttpResponse()
+@needPost
+def editType(request : HttpRequest):
+    id = _get_from_post(request, 'id')
+    name = _get_from_post(request, 'name')
+    note = _get_from_post(request, 'note')
+
+    type = models.Type.objects.get(pk=id)
+
+    with Edit(type):
+        type.name = name
+        type.note = note
+
+        type.save()
+
+    return HttpResponse()
+@needPost
+def editVariant(request : HttpRequest):
+    id = _get_from_post(request, 'id')
+    name = _get_from_post(request, 'name')
+    type = _get_from_post(request, 'type')
+    note = _get_from_post(request, 'note')
+
+    print(type)
+
+    variant = models.Variant.objects.get(pk=id)
+    type = models.Type.objects.get(pk=type)
+
+    with Edit(variant):
+        variant.name = name
+        variant.type = type
+        variant.note = note
+
+        variant.save()
 
     return HttpResponse()
 

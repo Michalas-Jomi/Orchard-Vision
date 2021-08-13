@@ -3,4 +3,9 @@
 <h3>{{ variant.name }}</h3>
 Gatunek: {{ variant.type|model }}
 </br>
+Drzewa: {{ trees }}
+</br>
 notatki: {{ variant.note|default:"Brak" }}
+
+<a class="model_url" href={% url 'main:variantEdit' variant.id %}><input class="edit" type="button" value="edytuj"></a>
+<input class="delete" type="button" value="usuń">

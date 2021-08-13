@@ -1,0 +1,7 @@
+<form method="POST" action={% url "broker:editType" %}>
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ type.id }}">
+    <label>Nazwa:<input name="name" value="{{ type.name }}"></label>
+    <label>Notatka<textarea name="note">{{ type.note }}</textarea></label>
+    <input type="submit" value="Zatwierdz">
+</form>

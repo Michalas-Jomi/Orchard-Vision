@@ -1,0 +1,14 @@
+<form method="POST" action={% url "broker:editVariant" %}>
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ variant.id }}">
+    <label>Nazwa:<input name="name" value="{{ variant.name }}"></label>
+    <label>Gatunek:
+        <select name="type" value="{{ variant.type.name }}">
+            {% for type in types %}
+                <option value="{{ type.id }}">{{ type.name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Notatka<textarea name="note">{{ variant.note }}</textarea></label>
+    <input type="submit" value="Zatwierdz">
+</form>
