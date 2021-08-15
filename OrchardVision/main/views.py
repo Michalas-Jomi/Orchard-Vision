@@ -39,6 +39,10 @@ class TypeView(TypeEditView):
 
         return kwargs
     
+class TypeNewView(TemplateView):
+    template_name = "main/typeNew.html"
+
+
 
 class abstractVariantView(DetailView):
     context_object_name = "variant"
@@ -63,9 +67,6 @@ class VariantEditView(abstractVariantView):
     def getTrees(self, **kwargs):
         return {'types': models.Type.objects.all()}
 
-
-class TypeNewView(TemplateView):
-    template_name = "main/typeNew.html"
 class VariantNewView(ListView):
     template_name = "main/variantNew.html"
     context_object_name = "types"

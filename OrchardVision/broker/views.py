@@ -1,6 +1,8 @@
 from datetime import date
 
-from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest, Http404
+from django.db import transaction
+from django.db.utils import IntegrityError
+from django.http import HttpResponse, HttpRequest, Http404
 from django.views.decorators.csrf import csrf_exempt
 
 from . import models
@@ -12,15 +14,15 @@ import json
 def _get_from_post(request, key):
     if key in request.POST:
         return request.POST.get(key)
-    raise HttpResponseBadRequest()
+    raise Http404()
 
 def _get_tree_from_post(request):
     type = _get_from_post(request, 'type')
     variant = _get_from_post(request, 'variant')
     note = request.POST.get('note', '')
 
-    type = models.Type.get(type)
-    variant = models.Variant.get(variant, type)
+    type = models.Type.get(name=type)
+    variant = models.Variant.get(name=variant, type=type)
 
     return type, variant, note
 
@@ -147,10 +149,11 @@ def newType(request : HttpRequest):
     note = _get_from_post(request, 'note')
 
     try:
-        models.Type.objects.create(name=name, note=note)
+        with transaction.atomic():
+            models.Type.objects.create(name=name, note=note)
         return HttpResponse()
-    except:
-        raise HttpResponseBadRequest()
+    except IntegrityError:
+        raise Http404()
 @needPost
 def newVariant(request : HttpRequest):
     name = _get_from_post(request, 'name')
@@ -159,10 +162,11 @@ def newVariant(request : HttpRequest):
 
     try:
         type = models.Type.objects.get(pk=type)
-        models.Variant.objects.create(name=name, type=type, note=note)
+        with transaction.atomic():
+            models.Variant.objects.create(name=name, type=type, note=note)
         return HttpResponse()
     except:
-        raise HttpResponseBadRequest()
+        raise Http404()
 @csrf_exempt
 @needPost
 def newTree(request : HttpRequest):

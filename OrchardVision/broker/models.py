@@ -1,5 +1,5 @@
-from datetime import datetime
 from django.db import models
+from django.utils import timezone
 
 
 def _repr(self):
@@ -52,7 +52,7 @@ class Tree(models.Model):
 
 
 class Actions(models.Model):
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     author = models.TextField(null=True)
     type = models.TextField()
     note = models.TextField(default='')
