@@ -50,21 +50,21 @@ class abstractVariantView(DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs =  super().get_context_data(**kwargs)
-        kwargs.update(self.getTrees(**kwargs))
+        kwargs.update(self.getContext(**kwargs))
         return kwargs
     @abstractmethod
-    def getTrees(self, **kwargs):
+    def getContext(self, **kwargs):
         pass
 class VariantView(abstractVariantView):
     template_name = "main/variant.html"
 
-    def getTrees(self, **kwargs):
+    def getContext(self, **kwargs):
         variant = kwargs[self.context_object_name]
         return {'trees': models.Tree.objects.filter(variant=variant).count()}
 class VariantEditView(abstractVariantView):
     template_name = "main/variantEdit.html"
 
-    def getTrees(self, **kwargs):
+    def getContext(self, **kwargs):
         return {'types': models.Type.objects.all()}
 
 class VariantNewView(ListView):
