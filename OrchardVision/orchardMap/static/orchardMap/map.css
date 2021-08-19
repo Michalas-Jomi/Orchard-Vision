@@ -1,4 +1,93 @@
 #map {
-    width: 100%;
-    height: 90vh;
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    z-index: -1;
+
+    width: 100vw;
+    height: 100vh;
+}
+
+#filters {
+    position: absolute;
+    
+    right: 0;
+    top: 5vh;
+    height: 75vh;
+    
+    min-width: 200px;
+    max-width: 20vw;
+
+    overflow: auto;
+
+    background: #22772288;
+
+    border-radius: 30px;
+
+    padding: 10px 15px;
+
+    border: 1px rgb(59, 54, 54) solid;
+}
+
+#filters ol {
+    list-style: none;
+    margin: 0;
+    padding: 0px
+}
+
+#filters ol.types > li {
+    margin-bottom: 5px;
+
+    min-height: 20px;
+}
+#filters ol.types > li > ol > li{
+    padding-left: 25px;
+}
+
+#filters button {
+    background: transparent;
+    
+    border: 1px thistle solid;
+    border-radius: 90px;
+
+    background: #ffffff40;
+
+    width: 20px;
+    height: 20px;
+
+    font-size: 12px;
+
+    text-align: center;
+
+    opacity: .8;
+}
+#filters button:hover {
+    opacity: 1;
+}
+
+#filters label {
+    margin-left: 5px;
+}
+
+
+#filters input[type="checkbox"] {
+    appearance: none;
+}
+#filters input[type="checkbox"]::after {
+    content: "X";
+    color: rgb(255, 1, 1);
+
+    opacity: .8;
+}
+#filters input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: rgb(8, 255, 29);
+}
+
+
+#filters label:hover [type="checkbox"]::after {
+    opacity: 1;
+
 }

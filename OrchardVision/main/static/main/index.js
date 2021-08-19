@@ -2,7 +2,7 @@ var _infoCounter = 0
 var curRequestId = undefined
 window.addEventListener('click', ev => {
     let target = ev.target;
-    while (target) {
+    while (target && target != document) {
         if (target.classList.contains('model_url')) {
             ev.preventDefault();
             
@@ -32,5 +32,16 @@ window.addEventListener('DOMContentLoaded', ev => {
 
     for (type of types) {
         type.style.width = width + "px";
+    }
+
+    
+    // #info z-index
+    let info = document.getElementById('info');
+    let listenerIn = ev => { info.style.setProperty('z-index', -1); };
+    let listenerOut = ev => { info.style.setProperty('z-index', 0); };
+    for (let li of document.getElementsByClassName("type")) {
+        li.onmouseover = listenerIn;
+        li.onmouseout  = listenerOut;
+        console.log(li)
     }
 });

@@ -1,9 +1,9 @@
-table {
+#treeInfo table {
     color: black;
     text-align: center;
     column-span: 0;
 }
-input,
-textarea {
+#treeInfo input,
+#treeInfo textarea {
     width: 200px;
 }

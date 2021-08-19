@@ -1,9 +1,23 @@
-nav.types {
-    display: block;
-    width: 100%;
-    height: 1.2rem;
+#container {
+    margin-top: 180px
+}
 
-    background-color: rgb(19, 22, 177);
+/*
+ * =====
+ *  nav
+ * =====
+ */
+nav.types {
+    position: absolute;
+
+    top: 3vh;
+    left: calc((100vw - 1200px) / 2);
+    
+    display: block;
+    width: 1200px;
+    height: 72px;
+    background-image: url("/static/main/cloud.png");
+    background-size: 100px;
 }
 
 nav.types > ul {
@@ -13,42 +27,56 @@ nav.types > ul {
 }
 nav.types > ul > li {
     float: left;
-
-    border-left: 1px olive dotted;
-}
-nav.types > ul > li:last-child {
-    border-right: 1px olive dotted;
 }
 nav.types > ul > li > ul {
     display: none;
     list-style: none;
     padding: 0;
-    background-color: rgb(36, 39, 173);
 }
 nav.types > ul > li:hover > ul {
     display: inherit;
 }
 nav.types > ul > li > ul > li {
     padding: 5px 20px;
-    border-top: 1px rgb(57, 59, 209) dotted;
+    background-color: rgb(197, 197, 206);
+    border-top: 1px rgb(164, 164, 172) dotted;
 }
 nav.types > ul > li > ul > li:last-child {
-    border-bottom: 1px rgb(57, 59, 209) dotted;
+    border-bottom: 1px rgb(164, 164, 172) dotted;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
 }
 
 
 
+/* 
+ * ======
+ *  info
+ * ====== 
+ */
 #info {
     position: relative;
 
-    width: 450px;
-    height: 450px;
+    width: 350px;
+    height: 350px;
     
     margin: 50px auto;
-    padding: 25px;
+    padding: 75px;
 
-    background-color: rgb(57, 110, 52);
+    background-image: url("/static/main/window.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+
+    color: black;
+
+    overflow: auto;
 }
+
+#info h3 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
 
 #info input[type="button"] {
     padding: 5px 20px;
@@ -58,13 +86,31 @@ nav.types > ul > li > ul > li:last-child {
 #info input.edit {
     display: block;
     margin-top: 20px;
+
+    border-radius: 10px;
+    color: rgb(68, 71, 68);
+    border: 1px rgb(34, 33, 33) solid;
+    background-color: rgb(84, 156, 72);
+    opacity: .9;
+}
+#info input.edit:hover {
+    background-color: rgb(108, 199, 92);
+    cursor: pointer;
 }
 
 #info input.delete {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
+    right: 50px;
+    bottom: 25px;
 
+    color: white;
+    border: 1px rgb(34, 33, 33) solid;
+    background-color: rgb(92, 8, 8);
+    border-radius: 20px;
+}
+#info input.delete:hover {
+    background-color: rgb(155, 53, 53);
+    cursor: pointer;
 }
 
 
@@ -79,17 +125,73 @@ nav.types > ul > li > ul > li:last-child {
     background: #00000010;
     border: none;
     border-radius: 90px;
-    color: var(--fontColor);
     font-size: 1rem;
 }
 #info form label > textarea {
     padding: 5px;
-    width: 100%;
+    width: calc(100% - 10px);
     height: 5rem;
     resize: vertical;
 }
 #info form input[type="submit"] {
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
+    width: 80%;
+    padding: 8px 0;
+    margin-left: 10%;
+    margin-top: 30px;
+
+    font-size: .9rem;
+
+
+    border-radius: 10px;
+
+    background-color: rgb(61, 184, 39);
+}
+#info form input[type="submit"]:hover {
+    background-color: rgb(73, 219, 47);
+    cursor: pointer;
+}
+#info form label > select {
+    font-size: .8rem;
+}
+
+
+/*
+ * =====
+ *  new
+ * =====
+ */
+#new {
+    position: absolute;
+
+    bottom: 0;
+    left: 20px;
+
+    background-image: url("/static/main/sign.png");
+    background-size: 100%;
+    width: 300px;
+    height: 200px;
+}
+#new .links {
+    width: 160px;
+    height: 65px;
+
+    margin-top: 65px;
+    margin-left: 70px;
+}
+#new .links a input {
+    width: 100%;
+    height: 45%;
+
+    font-size: .8rem;
+    color: rgb(255, 255, 255);
+
+    background: transparent;
+    border: none
+}
+#new .links a input:hover {
+    cursor: pointer;
+}
+
+#new .links a:hover input {
+    color: rgb(65, 45, 8);
 }

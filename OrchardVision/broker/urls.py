@@ -17,4 +17,6 @@ urlpatterns = [
     path('new/type',    views.newType,    name="newType"),
     path('new/variant', views.newVariant, name="newVariant"),
     path('new/tree',    views.newTree,    name="newTree"),
+
+    path('info/tree/<int:pk>', views.infoTree, name="infoTree"),
 ]

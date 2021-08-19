@@ -52,11 +52,16 @@ def initinfo(request : HttpRequest):
         variants[type_name].append(variant.name)
 
     _json['trees'] = [
-        {'id': tree.id, 'latitude': tree.latitude, 'longitude': tree.longitude, 'variant': tree.variant.name, 'type': tree.variant.type.name}
-            for tree in models.Tree.objects.all()
+        {
+            'id': tree.id,
+            'latitude': tree.latitude,
+            'longitude': tree.longitude,
+            'variant': tree.variant.name,
+            'type': tree.variant.type.name
+        } for tree in models.Tree.objects.all()
     ]
 
-    return HttpResponse(json.dumps(_json))
+    return HttpResponse(json.dumps(_json), content_type="application/json")
 
 
 ## Edit
@@ -107,6 +112,7 @@ def editVariant(request : HttpRequest):
         variant.save()
 
     return HttpResponse()
+@csrf_exempt
 @needPost
 def editTree(request : HttpRequest):
     planting_date = _get_from_post(request, 'planting_data')
@@ -182,5 +188,25 @@ def newTree(request : HttpRequest):
 
     models.Actions.objects.create(type='insert Tree', note=str(tree))
 
-    return HttpResponse()
+    return HttpResponse(str(tree.id))
 
+def infoTree(request : HttpRequest, pk : int):
+    tree = models.Tree.objects.get(pk=pk)
+
+    data = {
+        "id": tree.id,
+        "latitude": tree.latitude,
+        "longitude": tree.longitude,
+        "note": tree.note,
+        "planting_date": tree.planting_data.strftime("%d-%m-%Y"),
+        "variant": {
+            "id": tree.variant.id,
+            "name": tree.variant.name,
+            "type": {
+                "id": tree.variant.type.id,
+                "name": tree.variant.type.name,
+            }
+        },
+    }
+
+    return HttpResponse(json.dumps(data), content_type="application/json")

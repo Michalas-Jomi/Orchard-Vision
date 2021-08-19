@@ -115,11 +115,11 @@ function initMap() {
       disableDefaultUI: true,
 
       rotateControl: true,
-      fullscreenControl: true,
       scaleControl: true,
       zoomControl: true,
-
+      
       mapTypeControl: false,
+      fullscreenControl: false,
       streetViewControl: false,
   });
 

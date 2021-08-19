@@ -13,5 +13,5 @@ urlpatterns = [
     path('type/new',    views.TypeNewView.as_view(), name="typeNew"),
     path('variant/new', views.VariantNewView.as_view(), name="variantNew"),
     
-    re_path(r'(index(\.html)?)?', views.IndexView.as_view(),       name="index"),
+    path('index', views.IndexView.as_view(), name="index"),
 ]

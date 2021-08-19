@@ -11,12 +11,12 @@ body {
 
 a:link,
 a:visited {
-    color:rgb(175, 139, 21);
+    color:rgb(44, 97, 31);
     text-decoration: none;
 }
 a:hover {
-    color: rgb(212, 169, 25)
+    color: rgb(63, 143, 43);
 }
 a:active {
-    color: rgb(255, 196, 0)
+    color: rgb(65, 173, 38);
 }

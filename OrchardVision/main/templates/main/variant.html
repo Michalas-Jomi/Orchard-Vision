@@ -1,7 +1,7 @@
 {% load main.utils %}
 
 <h3>{{ variant.name }}</h3>
-Gatunek: {{ variant.type|model }}
+Gatunek: {{ variant.type|model:False }}
 </br>
 Drzewa: {{ trees }}
 </br>
