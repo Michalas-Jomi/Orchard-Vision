@@ -42,6 +42,5 @@ window.addEventListener('DOMContentLoaded', ev => {
     for (let li of document.getElementsByClassName("type")) {
         li.onmouseover = listenerIn;
         li.onmouseout  = listenerOut;
-        console.log(li)
     }
 });

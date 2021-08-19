@@ -6,5 +6,7 @@ Gatunek: {{ variant.type|model:False }}
 Drzewa: {{ trees }}
 </br>
 notatki: {{ variant.note|default:"Brak" }}
-
+</br>
+</br>
+<a href="{% url 'orchardMap:map' %}?filter_{{ variant.type.name }}={{ variant.name }}">Wyświetl na mapie</a>
 <a class="model_url" href={% url 'main:variantEdit' variant.id %}><input class="edit" type="button" value="edytuj"></a>

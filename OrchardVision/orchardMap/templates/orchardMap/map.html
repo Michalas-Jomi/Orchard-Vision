@@ -8,21 +8,50 @@
 
 {% block js %}
 <script src={% static 'orchardMap/Tree.js' %}></script>
-<script src={% static 'orchardMap/map.js' %}></script>
-<script src={% static 'Utils.js' %}></script>
 <script>
-    const treeMarkerUrl = '{% static 'orchardMap/img/treeMarker.png' %}'
+    function decodeHtmlEntities(str) {
+        return String(str).replace(/\&lt;/g, '<').replace(/\&gt;/g, '>').replace(/\&quot;/g, '"').replace(/\&#x27;/g, '\'').replace(/\&amp;/g, '&');
+    }
 
-    const trees = []
+    const treeMarkerUrl = '{% static 'orchardMap/img/treeMarker.png' %}';
+    const mapUrl = '{{ request.scheme }}://{{ request.get_host }}{{ request.path }}';
+
+    const trees = [];
+    const filters = {{ filter|safe }};
+    const type_filters = {{ type_filters|safe }};
+
+    for (let i=0; i < type_filters.length; i++)
+        type_filters[i] = decodeHtmlEntities(type_filters[i]);
+    for (let key in filters) {
+        let variants = filters[key];
+        delete filters[key];
+        key = decodeHtmlEntities(key);
+        filters[key] = variants;
+
+        for (let key in variants) {
+            let variant = variants[key];
+            delete variants[key];
+            key = decodeHtmlEntities(key);
+            variants[key] = variant;
+        }
+    }
+
+    
     {% for tree in trees %}
         trees.push(new Tree({{ tree.id }}, '{{ tree.variant.type.name|safe|addslashes }}', '{{ tree.variant.name|safe|addslashes }}', {{ tree.latitude }}, {{ tree.longitude }}));
     {% endfor %}
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=drawing&callback=initMap"></script>
+<script src={% static 'orchardMap/map.js' %}></script>
+<script src={% static 'Utils.js' %}></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"></script>
 {% endblock js %}
 
 {% block body %}
 <div id="map"></div>
-<nav id="filters">
-</nav>
+<aside id="filters_container">
+    <h2>Filtry</h2>
+    <div id="filters"></div>
+    <input class="link" type="button" id="get_filters_link" value="Udostępnij"></input>
+    <input class="center" type="button" id="center_button" value="Wyśrodkuj"></input>
+</aside>
 {% endblock body %}

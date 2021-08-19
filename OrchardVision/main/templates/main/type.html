@@ -2,5 +2,7 @@
 Drzewa: {{ trees }}
 </br>
 notatki: {{ type.note|default:"Brak" }}
-
+</br>
+</br>
+<a href="{% url 'orchardMap:map' %}?type_filter_{{ type.name }}">Wyświetl na mapie</a>
 <a class="model_url" href={% url "main:typeEdit" type.id %}><input class="edit" type="button" value="edytuj"></a>

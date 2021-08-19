@@ -1,6 +1,5 @@
 var infoWindow = null;
 var map = null;
-var filters = {}
 
 function applyFilters() {
    if (map === null) return;
@@ -8,16 +7,68 @@ function applyFilters() {
    trees.forEach(tree => tree.applyFilters(filters));
 }
 
+function generateLinkWithFilters() {
+   let url = mapUrl + '?';
+   let allOn = true;
+
+   for (type in filters)
+      for (variant in filters[type]) {
+         let on = filters[type][variant];
+         allOn  = allOn  &&  on;
+
+         if (on) {
+            if (!url.endsWith('?'))
+               url += '&';
+            url += `filter_${encodeURI(type)}=${encodeURI(variant)}`; 
+         }
+      }
+
+   if (url.endsWith('?'))
+      return url + encodeURI("type_filter_")
+   return allOn ? mapUrl : url;
+}
+
+function centerMap() {
+   if (!map) return;
+
+   let bounds = new google.maps.LatLngBounds();
+   let empty = true;
+
+   trees.forEach(tree => {
+      if (tree.marker.visible) {
+         bounds.extend(tree.marker.position)
+         empty = false;
+      }
+   })
+   if (empty)
+      trees.forEach(tree => bounds.extend(tree.marker.position))
+
+   map.fitBounds(bounds);
+}
 
 function initFilters() {
+   let def = Object.keys(filters).length === 0 && type_filters.length === 0
    trees.forEach(tree => {
       if (!(tree.type in filters))
          filters[tree.type] = {};
-      if (!(tree.variant in filters[tree.type]))
+      if (type_filters.includes(tree.type))
          filters[tree.type][tree.variant] = true;
+      else if (!(tree.variant in filters[tree.type]))
+         filters[tree.type][tree.variant] = def;
    });
    
-   applyFilters()
+   applyFilters();
+
+   // apply functionals to aside buttons
+   document.getElementById('get_filters_link').addEventListener('click', ev => {
+      if (navigator)
+         navigator.clipboard.writeText(generateLinkWithFilters()).then(() => alert('Skopiowano link'));
+      else
+         alert('Czynność niedostępna, użyć innej przeglądarki');
+   });
+   document.getElementById('center_button').addEventListener('click', centerMap);
+
+   // making view in DOM
 
    const root = document.getElementById('filters');
    
@@ -108,7 +159,6 @@ function initFilters() {
 }
 function initMap() {
    map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: 52.8319872, lng: 20.8208321 },
       zoom: 20,
       mapTypeId: 'hybrid',
 
@@ -121,11 +171,13 @@ function initMap() {
       mapTypeControl: false,
       fullscreenControl: false,
       streetViewControl: false,
-  });
+   });
 
-  infoWindow = new google.maps.InfoWindow();
+   infoWindow = new google.maps.InfoWindow();
 
-  trees.forEach(tree => tree.makeMarker(map));
+   trees.forEach(tree => tree.makeMarker(map));
 
-  initFilters()
+   initFilters();
+
+   centerMap();
 }
