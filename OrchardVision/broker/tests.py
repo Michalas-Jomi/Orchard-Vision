@@ -167,6 +167,22 @@ class EditViewsTests(TestCase):
         tree = models.Tree.objects.get(pk=tree.id)
 
         assertTree(self, tree, newTreeKwargs)
+        
+    def test_editTreeMove(self):
+        tree = generateTree()
+
+        data = {
+            'id': tree.id,
+            'lat': random.random(),
+            'lng': random.random(),
+        }
+
+        assertRequestCode(self, reverse('broker:editTreeMove'), data)
+
+        tree = models.Tree.objects.get(pk=tree.id)
+
+        self.assertEqual(data['lat'], tree.latitude)
+        self.assertEqual(data['lng'], tree.longitude)
 
 class DeleteViewsTests(TestCase):
     def send(self, id, url, res):

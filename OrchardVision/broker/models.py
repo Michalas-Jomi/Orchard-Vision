@@ -1,4 +1,5 @@
 from django.db import models
+from django.http.request import HttpRequest
 from django.utils import timezone
 
 
@@ -56,3 +57,16 @@ class Actions(models.Model):
     author = models.TextField(null=True)
     type = models.TextField()
     note = models.TextField(default='')
+
+    @staticmethod
+    def get_ip(request : HttpRequest) -> str:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            return x_forwarded_for.split(',')[0]
+        else:
+            return request.META.get('REMOTE_ADDR')
+    
+    @staticmethod
+    def create(request : HttpRequest, type : str, note : str):
+        return Actions.objects.create(author=Actions.get_ip(request), type=type, note=note)

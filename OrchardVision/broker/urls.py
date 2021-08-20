@@ -6,9 +6,10 @@ app_name = "broker"
 urlpatterns = [
     path('initinfo',     views.initinfo,    name="initinfo"),
     
-    path('edit/type',    views.editType,    name="editType"),
-    path('edit/variant', views.editVariant, name="editVariant"),
-    path('edit/tree',    views.editTree,    name="editTree"),
+    path('edit/type',     views.editType,    name="editType"),
+    path('edit/variant',  views.editVariant, name="editVariant"),
+    path('edit/tree',     views.editTree,    name="editTree"),
+    path('edit/move/tree',views.editTreeMove,name="editTreeMove"),
     
     path('delete/type/<int:pk>',    views.deleteType,    name="deleteType"),
     path('delete/variant/<int:pk>', views.deleteVariant, name="deleteVariant"),

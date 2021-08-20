@@ -13,7 +13,9 @@
         return String(str).replace(/\&lt;/g, '<').replace(/\&gt;/g, '>').replace(/\&quot;/g, '"').replace(/\&#x27;/g, '\'').replace(/\&amp;/g, '&');
     }
 
-    const treeMarkerUrl = '{% static 'orchardMap/img/treeMarker.png' %}';
+    const treeMarkerUrl = "{% static 'orchardMap/img/treeMarker.png' %}";
+    const treeDeleteUrl = "{% url 'broker:deleteTree' 0 %}"; {# need id on end #}
+    const treeMoveUrl = "{% url 'broker:editTreeMove' %}";
     const mapUrl = '{{ request.scheme }}://{{ request.get_host }}{{ request.path }}';
 
     const trees = [];

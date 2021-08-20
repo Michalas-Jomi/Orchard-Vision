@@ -159,7 +159,6 @@ function initFilters() {
 }
 function initMap() {
    map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 20,
       mapTypeId: 'hybrid',
 
       disableDefaultUI: true,
