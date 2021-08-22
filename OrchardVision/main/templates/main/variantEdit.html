@@ -4,7 +4,7 @@
 
     {% with url='broker:editVariant' name_value=variant.name note_value=variant.note  %}
         {{ block.super }}
-        <a class="model_url" href={% url "broker:deleteVariant" variant.id %}><input class="delete" type="button" value="usuń"></a>
+        <a class="needReloadYesNo" href={% url "broker:deleteVariant" variant.id %}><input class="delete" type="button" value="usuń"></a>
     {% endwith %}
 
 {% endblock content %}

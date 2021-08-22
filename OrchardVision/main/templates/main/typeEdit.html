@@ -4,7 +4,7 @@
 
     {% with url='broker:editType' name_value=type.name note_value=type.note  %}
         {{ block.super }}
-        <a class="model_url" href={% url "broker:deleteType" type.id %}><input class="delete" type="button" value="usuń"></a>
+        <a class="needReloadYesNo" href={% url "broker:deleteType" type.id %}><input class="delete" type="button" value="usuń"></a>
     {% endwith %}
 
 {% endblock content %}

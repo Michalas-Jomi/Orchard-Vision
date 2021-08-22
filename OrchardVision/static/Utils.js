@@ -7,13 +7,18 @@ class Utils {
      * @param {Function} error 
      */
      static send(method, url, data = {}, load = null, error = null) {
-        const XHR = new XMLHttpRequest(), FD  = new FormData();
-        XHR.addEventListener('load', load);
-        XHR.addEventListener('error', error);
+        const FD = new FormData();
         for (let key in data)
             FD.append(key, data[key]);
+        return Utils.sendForm(method, url, FD, load, error);
+    }
+    static sendForm(method, url, form, load = null, error = null) {
+        const XHR = new XMLHttpRequest();
+        XHR.addEventListener('load', load);
+        XHR.addEventListener('error', error);
         XHR.open(method, url);
-        XHR.send(FD);
+        XHR.send(form);
+
     }
 
     static htmlentities(str) {

@@ -10,14 +10,29 @@ window.addEventListener('click', ev => {
             let id = _infoCounter++;
             curRequestId = id;
     
-            const XHR = new XMLHttpRequest();
-            XHR.addEventListener('load', response => {
-                if (id === curRequestId)
-                    document.getElementById('info').innerHTML = response.target.response;
+            Utils.send('GET', url, {}, response => {
+                if (id === curRequestId) {
+                    let info = document.getElementById('info');
+                    info.innerHTML = response.target.response;
+                    
+                    let forms = info.getElementsByTagName("form");
+                    for (const form of forms)
+                        form.addEventListener('submit', ev => {
+                            ev.preventDefault();
+                            Utils.sendForm(ev.target.method, ev.target.action, new FormData(ev.target), response => {
+                                window.location.reload();
+                            }, err => {
+                                alert('Nie udało się wykonać operacji');
+                            });
+                        });
+                }
+
             });
-            XHR.open('GET', url);
-            XHR.send();
             break;
+        } else if (target.classList.contains('needReload') || target.classList.contains('needReloadYesNo')) {
+            ev.preventDefault();
+            if (!target.classList.contains('needReloadYesNo') || confirm('Jesteś pewnien?'))
+                Utils.send('GET', target.href, {}, () => window.location.reload(), err => alert('Nie udało się wykonać operacji'));
         }
         target = target.parentNode;
     }
