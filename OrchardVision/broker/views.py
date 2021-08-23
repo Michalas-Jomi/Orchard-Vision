@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from . import models
 
 import json
+import re
 
 
 
@@ -198,14 +199,20 @@ def newTree(request : HttpRequest):
     longitude = float(_get_from_post(request, 'longitude'))
     latitude = float(_get_from_post(request, 'latitude'))
     type, variant, note = _get_tree_from_post(request)
-    age = int(_get_from_post(request, 'age'))
 
-    today = date.today()
+    if 'age' in request.POST:
+        today = date.today()
+        age = int(_get_from_post(request, 'age'))
+        planting_date = today.replace(year = today.year - age)
+    else:
+        planting_date = _get_from_post(request, 'planting_date')
+        if re.fullmatch(r'\d{2}-\d{2}-\d{4}', planting_date):
+            planting_date = planting_date[6:] + '-' + planting_date[3:5] + '-' + planting_date[:2]
 
     return _new(request, models.Tree,
             variant=variant,
             latitude=latitude, longitude=longitude,
-            planting_data=today.replace(year = today.year - age),
+            planting_data=planting_date,
             note=note)
 
 def infoTree(request : HttpRequest, pk : int):

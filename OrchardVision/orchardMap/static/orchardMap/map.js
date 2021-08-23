@@ -172,6 +172,17 @@ function initTrees() {
    initAsync();
 }
 function initMap() {
+   class InfoWindow extends google.maps.InfoWindow {
+      open(a, b) {
+         this.visible = true;
+         super.open(a, b);
+      }
+      close() {
+         this.visible = false;
+         super.close();
+      }
+   }
+
    map = new google.maps.Map(document.getElementById("map"), {
       mapTypeId: 'hybrid',
 
@@ -187,18 +198,21 @@ function initMap() {
    });
 
    map.addListener('click', ev => {
-      infoWindow.close();
-      infoWindow.setContent('Wczytywanie formularza');
-      infoWindow.setPosition(ev.latLng);
-      infoWindow.open(map);
-
-      Utils.send('GET', treeNewUrl + `?lat=${ev.latLng.lat()}&lng=${ev.latLng.lng()}`, {}, 
-            response => infoWindow.setContent(response.target.response),
-            err => infoWindow.setContent('Wystąpił problem podczas pobierania formularza')
-      );
+      if (infoWindow.visible) {
+         infoWindow.close();
+      } else {
+         infoWindow.setContent('Wczytywanie formularza');
+         infoWindow.setPosition(ev.latLng);
+         infoWindow.open(map);
+   
+         Utils.send('GET', treeNewUrl + `?lat=${ev.latLng.lat()}&lng=${ev.latLng.lng()}`, {}, 
+               response => infoWindow.setContent(response.target.response),
+               err => infoWindow.setContent('Wystąpił problem podczas pobierania formularza')
+         );
+      }
    });
 
-   infoWindow = new google.maps.InfoWindow();
+   infoWindow = new InfoWindow();
 
    trees.forEach(tree => tree.makeMarker());
    initAsync();

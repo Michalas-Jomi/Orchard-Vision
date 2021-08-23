@@ -17,7 +17,9 @@
         const mapUrl = '{{ request.scheme }}://{{ request.get_host }}{{ request.path }}';
         const treeDeleteUrl = "{% url 'broker:deleteTree' 0 %}"; {# need id on end #}
         const treeNewUrl = "{% url 'orchardMap:newTree' %}"; {# need coords on end #}
+        const treeInfoUrl = "{% url 'broker:infoTree' 0 %}"; {# need id on end #}
         const treeMarkerUrl = "{% static 'orchardMap/img/treeMarker.png' %}";
+        const treeNewBrokerUrl = "{% url 'broker:newTree' %}";
         const treeMoveUrl = "{% url 'broker:editTreeMove' %}";
 
         const trees = [];
