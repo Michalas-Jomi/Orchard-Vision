@@ -1,0 +1,16 @@
+{# parent deleteUrl url model #}
+{% extends parent %}
+
+{% block content %}
+    {% with url=url name_value=model.name note_value=model.note  %}
+        {{ block.super }}
+        <a class="needReloadYesNo" href={% url deleteUrl model.id %}><input class="delete" type="button" value="usuń"></a>
+    {% endwith %}
+{% endblock content %}
+
+{% block interior %}
+
+    <input type="hidden" name="id" value="{{ model.id }}">
+    {{ block.super }}
+    
+{% endblock interior %}

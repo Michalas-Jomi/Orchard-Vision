@@ -1,43 +1,36 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'orchardMap/treeForm.html' %}
 
-{% block head %}
-    <link rel="stylesheet" href={% static 'orchardMap/treeInfo.css' %}/>
-{% endblock head %}
-{% block body %}
-    <div id="treeInfoContainer">
-        <form method="POST" action={% url 'broker:editTree' %} id="treeInfo">
-            {% csrf_token %}
-            <input type="hidden" name="id" value="{{ tree.id }}">
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Gatunek:</td>
-                        <td><input name="type" value="{{ tree.variant.type.name }}"></td>
-                    </tr>
-                    <tr>
-                        <td>Odmiana:</td>
-                        <td><input name="variant" value="{{ tree.variant.name }}"></td>
-                    </tr>
-                    <tr>
-                        <td>Zasadzono:</td>
-                        <td><input name="planting_data" type="date" value="{{ tree.planting_data|date:"Y-m-d" }}"></td>
-                    </tr>
-                    <tr>
-                        <td>Notatka:</td>
-                        <td><textarea  name="note">{{ tree.note }}</textarea></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="submit" value="Zapisz">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
-        <div class="buttons">
-            <button class="move">Przesuń</button>
-            <button class="delete">Usuń</button>
-        </div>
+{% block action %}{% url 'broker:editTree' %}{% endblock action %}
+
+{% block type %}
+    <input name="type" value="{{ tree.variant.type.name }}">
+{% endblock type %}
+
+{% block preIn %}
+    <input type="hidden" name="id" value="{{ tree.id }}">
+{% endblock preIn %}
+
+{% block variant %}
+    <input name="variant" value="{{ tree.variant.name }}">
+{% endblock variant %}
+
+
+{% block plantedTitle %}Zasadzono{% endblock plantedTitle %}
+{% block planted %}
+    <input name="planting_data" type="date" value="{{ tree.planting_data|date:"Y-m-d" }}">
+{% endblock planted %}
+
+{% block note %}
+    <textarea  name="note">{{ tree.note }}</textarea>
+{% endblock note %}
+
+{% block submit %}
+    <input type="submit" value="Zapisz">
+{% endblock submit %}
+
+{% block post %}
+    <div class="buttons">
+        <button class="move">Przesuń</button>
+        <button class="delete">Usuń</button>
     </div>
-{% endblock body %}
+{% endblock post %}

@@ -1,0 +1,43 @@
+{% extends 'orchardMap/treeForm.html' %}
+
+{% block action %}{% url 'broker:newTree' %}{% endblock action %}
+
+{% block type %}
+    <select name="type">
+        {% for type in types %}
+            <option value="{{ type.name }}" >{{ type.name }}</option>
+        {% endfor %}
+    </select>
+{% endblock type %}
+
+{% block preIn %}
+    <input type="hidden" name="latitude"  value="{{ request.GET.lat }}">
+    <input type="hidden" name="longitude" value="{{ request.GET.lng }}">
+{% endblock preIn %}
+
+{% block variant %}
+    <select name="variant">
+        {% regroup variants by type as variants_list %}
+        {% for variants_group in variants_list %}
+            <optgroup label="{{ variants_group.grouper.name }}">
+                {% for variant in variants_group.list %}
+                    <option value="{{ variant.name }}" >{{ variant.name }}</option>
+                {% endfor %}
+            </optgroup>
+        {% endfor %}
+    </select>
+{% endblock variant %}
+
+
+{% block plantedTitle %}Wiek{% endblock plantedTitle %}
+{% block planted %}
+    <input name="age" type="number" value="0">
+{% endblock planted %}
+
+{% block note %}
+    <textarea name="note">{{ tree.note }}</textarea>
+{% endblock note %}
+
+{% block submit %}
+    <input type="submit" value="Utwórz">
+{% endblock submit %}

@@ -21,6 +21,7 @@
     max-width: 20vw;
 
     background: #22772288;
+    color: var(--fontColorLight);
 
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;

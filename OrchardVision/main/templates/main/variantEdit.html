@@ -1,17 +1,1 @@
-{% extends 'main/variantNew.html' %}
-
-{% block content %}
-
-    {% with url='broker:editVariant' name_value=variant.name note_value=variant.note  %}
-        {{ block.super }}
-        <a class="needReloadYesNo" href={% url "broker:deleteVariant" variant.id %}><input class="delete" type="button" value="usuń"></a>
-    {% endwith %}
-
-{% endblock content %}
-
-{% block interior %}
-
-    <input type="hidden" name="id" value="{{ variant.id }}">
-    {{ block.super }}
-    
-{% endblock interior %}
+{% include 'main/edit.html' with parent='main/variantNew.html' deleteUrl="broker:deleteVariant" url='broker:editVariant' model=variant %}

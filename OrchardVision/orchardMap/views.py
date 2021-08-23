@@ -1,6 +1,7 @@
 from django.views import generic
 
 import OrchardVision.settings as settings
+import broker.models as models
 from broker.models import Tree
 
 from html import escape
@@ -32,9 +33,18 @@ class MapView(generic.TemplateView):
 
         return context
 
-class TreeInfo(generic.TemplateView):
+class TreeInfo(generic.DetailView):
     template_name = "orchardMap/treeInfo.html"
+    context_object_name = "tree"
+    model = Tree
 
-    def get_context_data(self, **kwargs):
-        kwargs['tree'] = Tree.objects.get(pk=kwargs['tree'])
-        return super().get_context_data(**kwargs)
+class TreeNew(generic.TemplateView):
+    template_name = "orchardMap/treeNew.html"
+
+    def get_context_data(self, **data):
+        data = super().get_context_data(**data)
+
+        data['types'] = models.Type.objects.all()
+        data['variants'] = models.Variant.objects.all().order_by('type_id')
+
+        return data

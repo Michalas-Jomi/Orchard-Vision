@@ -1,4 +1,8 @@
+/// <reference types="../../../../types/google.maps" />
+
+/** @type { google.maps.InfoWindow } */
 var infoWindow = null;
+/** @type { google.maps.Map } */
 var map = null;
 
 function applyFilters() {
@@ -69,7 +73,6 @@ function initFilters() {
    document.getElementById('center_button').addEventListener('click', centerMap);
 
    // making view in DOM
-
    const root = document.getElementById('filters');
    
    let types = document.createElement('ol');
@@ -170,6 +173,18 @@ function initMap() {
       mapTypeControl: false,
       fullscreenControl: false,
       streetViewControl: false,
+   });
+
+   map.addListener('click', ev => {
+      infoWindow.close();
+      infoWindow.setContent('Wczytywanie formularza');
+      infoWindow.setPosition(ev.latLng);
+      infoWindow.open(map);
+
+      Utils.send('GET', treeNewUrl + `?lat=${ev.latLng.lat()}&lng=${ev.latLng.lng()}`, {}, 
+            response => infoWindow.setContent(response.target.response),
+            err => infoWindow.setContent('Wystąpił problem podczas pobierania formularza')
+      );
    });
 
    infoWindow = new google.maps.InfoWindow();

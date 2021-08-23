@@ -1,17 +1,1 @@
-{% extends 'main/typeNew.html' %}
-
-{% block content %}
-
-    {% with url='broker:editType' name_value=type.name note_value=type.note  %}
-        {{ block.super }}
-        <a class="needReloadYesNo" href={% url "broker:deleteType" type.id %}><input class="delete" type="button" value="usuń"></a>
-    {% endwith %}
-
-{% endblock content %}
-
-{% block interior %}
-
-    <input type="hidden" name="id" value="{{ type.id }}">
-    {{ block.super }}
-    
-{% endblock interior %}
+{% include 'main/edit.html' with parent='main/typeNew.html' deleteUrl="broker:deleteType" url='broker:editType' model=type %}

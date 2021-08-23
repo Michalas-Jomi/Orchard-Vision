@@ -1,11 +1,17 @@
+#treeInfo {
+    font-size: .8rem;
+}
+
 #treeInfo table {
     color: black;
     text-align: center;
     column-span: 0;
 }
 #treeInfo input,
-#treeInfo textarea {
+#treeInfo textarea,
+#treeInfo select {
     width: 200px;
+    font-size: .8rem;
 }
 #treeInfoContainer .buttons {
     width: 100%;
