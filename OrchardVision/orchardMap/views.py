@@ -48,3 +48,9 @@ class TreeNew(generic.TemplateView):
         data['variants'] = models.Variant.objects.all().order_by('type_id')
 
         return data
+
+class Trees(generic.ListView):
+    template_name = "orchardMap/treesJS.html"
+    content_type = "application/javascript; charset=utf-8"
+    context_object_name = "trees"
+    model = Tree

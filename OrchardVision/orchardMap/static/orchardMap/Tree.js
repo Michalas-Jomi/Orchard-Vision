@@ -5,13 +5,17 @@ class Tree {
         this.variant = variant;
         this.pos = {lat: lat, lng: lng};
         this.marker = null;
+
+        this.makeMarker()
     }
 
     applyFilters(filters) {
         this.marker.setVisible(filters[this.type][this.variant])
     }
 
-    makeMarker(map) {
+    makeMarker() {
+        if (!map || this.marker) return;
+
         let marker = new google.maps.Marker({
             map: map,
             position: this.pos,

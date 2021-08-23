@@ -1,0 +1,7 @@
+{% for tree in trees %}
+    trees.push(new Tree({{ tree.id }}, '{{ tree.variant.type.name|safe|addslashes }}', '{{ tree.variant.name|safe|addslashes }}', {{ tree.latitude }}, {{ tree.longitude }}));
+    {% if forloop.first %}
+        if (map) centerMap();
+    {% endif %}
+{% endfor %}
+setTimeout(initTrees, 1);

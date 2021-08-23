@@ -160,6 +160,17 @@ function initFilters() {
       checkTypeCheckbox(typeOl);
    }
 }
+
+var asyncDone = 0;
+function initAsync() {
+   if (++asyncDone == 2) {
+      centerMap();
+      initFilters();
+   }
+}
+function initTrees() {
+   initAsync();
+}
 function initMap() {
    map = new google.maps.Map(document.getElementById("map"), {
       mapTypeId: 'hybrid',
@@ -189,9 +200,6 @@ function initMap() {
 
    infoWindow = new google.maps.InfoWindow();
 
-   trees.forEach(tree => tree.makeMarker(map));
-
-   initFilters();
-
-   centerMap();
+   trees.forEach(tree => tree.makeMarker());
+   initAsync();
 }
