@@ -1,7 +1,6 @@
 {% extends 'main/infoBase.html' %}
 
 {% block content %}
-
     {% with url=url|default:'broker:newVariant' placeholder="Odmiana" %}
         {{ block.super }}
     {% endwith %}
@@ -10,13 +9,15 @@
 
 {% block interior %}
 
-    <label>Gatunek:
-        <select name="type">
-            {% for type in types %}
-                <option value="{{ type.id }}" {% if variant.type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
-            {% endfor %}
-        </select>
-    </label>
+    <div>
+        <label>Gatunek:
+            <select name="type">
+                {% for type in types %}
+                    <option value="{{ type.id }}" {% if variant.type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </div>
 
 {% endblock interior %}
 

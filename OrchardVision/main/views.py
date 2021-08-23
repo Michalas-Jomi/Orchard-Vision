@@ -12,10 +12,13 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
+
         types = set()
         for variant in kwargs['variants']:
             types.add(variant.type_id)
         kwargs['empty_types'] = models.Type.objects.exclude(id__in=types)
+
+        kwargs['trees'] = models.Tree.objects.count()
 
         return kwargs
 
@@ -63,11 +66,41 @@ class VariantView(abstractVariantView):
         return {'trees': models.Tree.objects.filter(variant=variant).count()}
 class VariantEditView(abstractVariantView):
     template_name = "main/variantEdit.html"
-
+    extra_context = {
+        'parent': 'main/variantNew.html',
+        'deleteUrl': "broker:deleteVariant",
+        'url': 'broker:editVariant',
+    }
+    
     def getContext(self, **kwargs):
-        return {'types': models.Type.objects.all()}
+        return {
+            'model': kwargs[self.context_object_name],
+            'types': models.Type.objects.all(),
+            'harvest_times': models.HarvestTime.objects.all()
+        }
 
 class VariantNewView(ListView):
     template_name = "main/variantNew.html"
     context_object_name = "types"
     model = models.Type
+
+
+class HarvestTimeNewView(TemplateView):
+    template_name = "main/harvestTime.html"
+class HarvestTimesView(ListView):
+    template_name = "main/harvestTimes.html"
+    context_object_name = "harvest_times"
+    model = models.HarvestTime
+    ordering = 'start'
+    extra_context = {
+        'url': 'broker:newHarvestTime',
+        'header': 'Nowy czas zbiorów',
+    }
+class HarvestTimeEditView(DetailView):
+    template_name = "main/harvestTime.html"
+    context_object_name = "harvestTime"
+    model = models.HarvestTime
+    extra_context = {
+        'url': 'broker:editHarvestTime',
+        'header': 'Edycja czasu zbiorów',
+    }

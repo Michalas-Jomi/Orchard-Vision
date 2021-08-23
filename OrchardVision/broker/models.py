@@ -33,10 +33,14 @@ class Type(models.Model):
 
     get = _get
 
+class HarvestTime(models.Model):
+    title = models.TextField()
+    start = models.DateField()
+    end   = models.DateField()
 class Variant(models.Model):
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
     name = models.TextField()
-    harvest_time = models.SmallIntegerField(null=True)# I połowa lipca | II Połowa śierpnia...
+    harvest_time = models.ForeignKey(HarvestTime, null=True, on_delete=models.SET_NULL)
     note = models.TextField(default='')
 
     get = _get

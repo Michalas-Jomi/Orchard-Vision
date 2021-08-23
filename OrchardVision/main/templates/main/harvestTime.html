@@ -1,0 +1,11 @@
+<header><h3>{{ header }}</h3></header>
+<form method="POST" action="{% url url %}">
+    {% csrf_token %}
+    {% if harvestTime %}
+    <input type="hidden" name="id" value="{{ harvestTime.id }}">
+    {% endif %}
+    <label>Nazwa:    <input type="text" name="title" value="{{ harvestTime.title }}" placeholder="Nazwa"></label>
+    <label>Początek: <input type="date" name="start" value="{{ harvestTime.start|date:"Y-m-d" }}"></label>
+    <label>Koniec:   <input type="date" name="end"   value="{{ harvestTime.end|date:"Y-m-d" }}"></label>
+    <input type="submit" value="Zatwierdz">
+</form>

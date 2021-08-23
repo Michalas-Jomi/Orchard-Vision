@@ -1,0 +1,9 @@
+<ol id="harvestTimes">
+{% for harvest_time in harvest_times %}
+    <li>
+        {{ harvest_time.title }}
+        <a class="edit model_url" href="{% url 'main:harvestTimeEdit' harvest_time.id %}">&#x270E;</a>
+        <a class="needReloadYesNo delete" href="{% url 'broker:deleteHarvestTime' harvest_time.id %}">&#x274C;</a>
+    </li>
+{% endfor %}
+</ol>

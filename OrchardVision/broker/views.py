@@ -17,6 +17,15 @@ def _get_from_post(request, key):
         return request.POST.get(key)
     raise Http404()
 
+def _prepare_date(date : str) -> str:
+    if re.fullmatch(r'\d{2}-\d{2}-\d{4}', date):
+        return date[6:] + '-' + date[3:5] + '-' + date[:2]
+    if re.fullmatch(r'\d{4}-\d{2}-\d{2}', date):
+        return date
+    raise Http404()
+
+
+
 def _get_tree_from_post(request):
     type = _get_from_post(request, 'type')
     variant = _get_from_post(request, 'variant')
@@ -26,6 +35,15 @@ def _get_tree_from_post(request):
     variant = models.Variant.get(name=variant, type=type)
 
     return type, variant, note
+
+def _harvestTimeForm(request):
+    year2k = lambda date: '2000' + _prepare_date(date)[4:]
+    return {
+        'title': _get_from_post(request, 'title'),
+        'start': year2k(_get_from_post(request, 'start')),
+        'end':  year2k(_get_from_post(request, 'end')),
+    }
+
 
 def needPost(func):
     def f(request, *args, **kwargs):
@@ -78,6 +96,7 @@ class Edit:
         pass
     def __exit__(self, type, value, traceback):
         self.model.save()
+
         models.Actions.create(
             self.request,
             "edit " + self.model.__class__.__name__,
@@ -104,7 +123,10 @@ def editVariant(request : HttpRequest):
     type = _get_from_post(request, 'type')
     note = _get_from_post(request, 'note')
 
-    print(type)
+    harvest = None
+    if 'harvest' in request.POST:
+        harvest = int(request.POST['harvest'])
+        harvest = models.HarvestTime.objects.get(pk=harvest)
 
     variant = models.Variant.objects.get(pk=id)
     type = models.Type.objects.get(pk=type)
@@ -113,6 +135,8 @@ def editVariant(request : HttpRequest):
         variant.name = name
         variant.type = type
         variant.note = note
+        if 'harvest' in request.POST:
+            variant.harvest_time = harvest
 
     return HttpResponse()
 @csrf_exempt
@@ -144,6 +168,18 @@ def editTreeMove(request : HttpRequest):
         tree.longitude = float(lng)
 
     return HttpResponse()
+@needPost
+def editHarvestTime(request : HttpRequest):
+    id = _get_from_post(request, 'id')
+
+    harvestTime = models.HarvestTime.objects.get(pk=id)
+
+    with Edit(request, harvestTime):
+        for key, value in _harvestTimeForm(request).items():
+            setattr(harvestTime, key, value)
+
+    return HttpResponse()
+
 
 
 ## Delete
@@ -159,9 +195,10 @@ def deleteFactory(model):
             return HttpResponse('0')
     return f
 
-deleteType    = deleteFactory(models.Type)
-deleteVariant = deleteFactory(models.Variant)
-deleteTree    = deleteFactory(models.Tree)
+deleteType        = deleteFactory(models.Type)
+deleteVariant     = deleteFactory(models.Variant)
+deleteTree        = deleteFactory(models.Tree)
+deleteHarvestTime = deleteFactory(models.HarvestTime)
     
 
 ## New
@@ -175,7 +212,9 @@ def _new(request : HttpRequest, model, **model_kwargs):
     except IntegrityError:
         raise Http404()
 
-
+@needPost
+def newHarvestTime(request : HttpRequest):
+    return _new(request, models.HarvestTime, **_harvestTimeForm(request))
 @needPost
 def newType(request : HttpRequest):
     name = _get_from_post(request, 'name')
@@ -205,9 +244,7 @@ def newTree(request : HttpRequest):
         age = int(_get_from_post(request, 'age'))
         planting_date = today.replace(year = today.year - age)
     else:
-        planting_date = _get_from_post(request, 'planting_date')
-        if re.fullmatch(r'\d{2}-\d{2}-\d{4}', planting_date):
-            planting_date = planting_date[6:] + '-' + planting_date[3:5] + '-' + planting_date[:2]
+        planting_date = _prepare_date(_get_from_post(request, 'planting_date'))
 
     return _new(request, models.Tree,
             variant=variant,

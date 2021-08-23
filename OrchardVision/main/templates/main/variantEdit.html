@@ -1,1 +1,17 @@
-{% include 'main/edit.html' with parent='main/variantNew.html' deleteUrl="broker:deleteVariant" url='broker:editVariant' model=variant %}
+{% extends 'main/edit.html' %}
+
+{% block interior %}
+    {{ block.super }}
+    <div>
+        <label class="nonBlock">Czas Zbioru: 
+            <select name="harvest">
+                {% for harvest_time in harvest_times %}
+                    <option value="{{ harvest_time.id }}" {% if variant.harvest_time_id == harvest_time.id %}selected{% endif %}>{{ harvest_time.title }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <a href="{% url 'main:newHarvestTime' %}" class="model_url foreignKey">&#128933;</a>
+    </div>
+{% endblock interior %}
+
+

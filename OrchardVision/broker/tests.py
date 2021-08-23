@@ -1,10 +1,10 @@
-from datetime import date
+from datetime import date, timedelta
 from django.http import response
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import tree
 
-from . import models
+from . import models, views
 
 import random
 import json
@@ -27,6 +27,9 @@ def generate_Text(min_len=30, max_len=100, alphabet=None, **kwargs) -> str:
         res += random.choice(alphabet)
     
     return res
+def generate_date() -> date:
+    return date(year=1970, month=1, day=1) + timedelta(days=random.randint(1, 365) * random.randrange(200))
+    return date(year=1970) + timedelta(days=random.randrange(28), months=random.randrange(12), years=random.randrange(200))
 def generateTreeKwargs(**kwargs) -> dict:
     latitude, longitude = generate_LatLng()
     return {'type' : generate_Text(**kwargs), 'variant': generate_Text(**kwargs), 'age' : random.randrange(200),
@@ -81,7 +84,60 @@ class ModelsTests(TestCase):
 
         tree = models.Tree(latitude=latitude, longitude=longitude, planting_data=date.today())
         self.assertTrue(tree.getLocation() == (latitude, longitude))
-    
+
+class viewsUtilsTests(TestCase):
+    def test_prepare_date(self):
+        for InalidDate in '11-22-33', '111-22-33', '11-222-333', '11-2222-33', '1111-2222-33', '1111-22-3333':
+            self.assertRaises(response.Http404, lambda: views._prepare_date(InalidDate))
+        self.assertEqual(views._prepare_date('11-22-3333'), '3333-22-11')
+        self.assertEqual(views._prepare_date('1111-22-33'), '1111-22-33')
+    def test_get_from_post(self):
+        self.POST = {}
+        self.assertRaises(response.Http404, lambda: views._get_from_post(self, 'key'))
+
+        self.POST = {'antoherkey': 'some value'}
+        self.assertRaises(response.Http404, lambda: views._get_from_post(self, 'key'))
+
+        self.POST = {'key': 'some value'}
+        self.assertEqual(views._get_from_post(self, 'key'), 'some value')
+    def test_get_tree_from_post(self):
+        self.POST = {
+            'type': generate_Text(),
+            'variant': generate_Text(),
+            'note': generate_Text(),
+        }
+
+        type, variant, note = views._get_tree_from_post(self)
+
+        self.assertEqual(type.name, self.POST['type'])
+        self.assertEqual(variant.name, self.POST['variant'])
+        self.assertEqual(note, self.POST['note'])
+
+        views._get_tree_from_post(self)
+        views._get_tree_from_post(self)
+
+        self.POST['variant'] = generate_Text()
+
+        views._get_tree_from_post(self)
+
+        self.assertEqual(models.Type.objects.count(), 1)
+        self.assertEqual(models.Variant.objects.count(), 2)
+        
+    def test_need_post(self):
+        @views.needPost
+        def postFunc(request, arg1):
+            return arg1 + 2
+        
+        self.POST = {'1': 2}
+        self.assertEqual(postFunc(self, 3), 5)
+
+        self.assertRaises(TypeError, lambda: postFunc(self))
+
+        self.POST = {}
+        self.assertRaises(response.Http404, lambda: postFunc(self, 3))
+
+        
+
 class UniversalViewsTests(TestCase):
     def test_initInfo(self):
         trees = [generateTree(min_len=1, max_len=2, alphabet='abc') for i in range(100)]
@@ -183,6 +239,23 @@ class EditViewsTests(TestCase):
 
         self.assertEqual(data['lat'], tree.latitude)
         self.assertEqual(data['lng'], tree.longitude)
+    
+    def test_editHarvestTime(self):
+        harvest = models.HarvestTime.objects.create(title=generate_Text(), start=generate_date(), end=generate_date())
+
+        title = generate_Text()
+        start = generate_date()
+        end   = generate_date()
+
+        assertRequestCode(self, reverse('broker:editHarvestTime'), {'id': harvest.id, 'title': title, 'start': start, 'end': end})
+
+        edited = models.HarvestTime.objects.get(pk=harvest.id)
+
+        self.assertEqual(edited.title, title)
+        self.assertEqual(edited.start, start.replace(year=2000))
+        self.assertEqual(edited.end,   end.replace(year=2000))
+
+
 
 class DeleteViewsTests(TestCase):
     def send(self, id, url, res):
@@ -222,6 +295,19 @@ class DeleteViewsTests(TestCase):
         self.send(tree.id + 1, 'broker:deleteTree', '0')
         
         self.assertEqual(models.Tree.objects.filter(pk=tree.id).count(), 0)
+    
+    def test_deleteHarvestTime(self):
+        harvestTime = models.HarvestTime.objects.create(title=generate_Text(), start=date.today(), end=date.today())
+
+        self.assertEqual(models.HarvestTime.objects.filter(pk=harvestTime.id).count(), 1)
+
+        self.send(0,                  'broker:deleteHarvestTime', '0')
+        self.send(harvestTime.id,     'broker:deleteHarvestTime', '1')
+        self.send(harvestTime.id,     'broker:deleteHarvestTime', '0')
+        self.send(harvestTime.id + 1, 'broker:deleteHarvestTime', '0')
+        
+        self.assertEqual(models.HarvestTime.objects.filter(pk=harvestTime.id).count(), 0)
+
 
 class NewViewsTests(TestCase):
     def test_newType(self):
@@ -262,6 +348,20 @@ class NewViewsTests(TestCase):
         self.assertEqual(models.Tree.objects.count(), curTrees + 2)
         type = models.Type.objects.get(name=treeKwargs['type'])
         self.assertEqual(models.Variant.objects.filter(type=type, name=treeKwargs['variant']).count(), 1)
+    
+    def test_newHarvestTime(self):
+        title = generate_Text()
+        start = generate_date()
+        end   = generate_date()
+
+        assertRequestCode(self, reverse('broker:newHarvestTime'), {'title': title, 'start': start, 'end': end})
+
+        last = models.HarvestTime.objects.last()
+
+        self.assertEqual(last.title, title)
+        self.assertEqual(str(last.start)[4:], views._prepare_date(str(start))[4:])
+        self.assertEqual(str(last.end)[4:],   views._prepare_date(str(end))[4:])
+        self.assertEqual(str(last.start)[:4], '2000')
 
     
         

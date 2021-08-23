@@ -4,9 +4,13 @@
 
     <form method="POST" action={% url url %}>
         {% csrf_token %}
-        <label>Nazwa:<input name="name" placeholder={{ placeholder }} value={{ name_value|addslashes }}></label>
+        <div>
+            <label>Nazwa:<input name="name" placeholder={{ placeholder }} value={{ name_value|addslashes }}></label>
+        </div>
         {% block interior %}{% endblock interior %}
-        <label>Notatka<textarea name="note">{{ note_value }}</textarea></label>
+        <div>
+            <label>Notatka<textarea name="note">{{ note_value }}</textarea></label>
+        </div>
         <input type="submit" value="Zatwierdz">
     </form>
     

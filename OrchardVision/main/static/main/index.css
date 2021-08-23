@@ -2,6 +2,11 @@
     margin-top: 180px
 }
 
+.foreignKey {
+    color: rgb(21, 255, 0);
+    font-size: 1.2rem;
+    text-align: center;
+}
 /*
  * =====
  *  nav
@@ -54,7 +59,7 @@ nav.types > ul > li > ul > li:last-child {
  *  info
  * ====== 
  */
-#info {
+#infoContainer {
     position: relative;
 
     width: 350px;
@@ -68,8 +73,12 @@ nav.types > ul > li > ul > li:last-child {
     background-repeat: no-repeat;
 
     color: black;
-
+}
+#info {
     overflow: auto;
+
+    height: 100%;
+    width: 100%;
 }
 
 #info h3 {
@@ -115,7 +124,6 @@ nav.types > ul > li > ul > li:last-child {
 
 
 #info form label {
-    display: block;
     margin-bottom: 10px;
 }
 #info form label > input {
@@ -194,4 +202,15 @@ nav.types > ul > li > ul > li:last-child {
 
 #new .links a:hover input {
     color: rgb(65, 45, 8);
+}
+
+
+/*
+ * ==============
+ *  harvestTimes
+ * ==============
+ */
+ol#harvestTimes {
+    list-style: none;
+    padding: 0;
 }
