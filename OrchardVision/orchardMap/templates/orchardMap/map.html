@@ -9,6 +9,7 @@
 {% block js %}
     <script src={% static 'Utils.js' %}></script>
     <script src={% static 'orchardMap/Tree.js' %}></script>
+    <script src={% static 'orchardMap/HarvestTime.js' %}></script>
     <script>
         function decodeHtmlEntities(str) {
             return String(str).replace(/\&lt;/g, '<').replace(/\&gt;/g, '>').replace(/\&quot;/g, '"').replace(/\&#x27;/g, '\'').replace(/\&amp;/g, '&');
@@ -23,6 +24,8 @@
         const treeMoveUrl = "{% url 'broker:editTreeMove' %}";
 
         const trees = [];
+        const harvests = {};
+        var filter_harvest_time = {{ harvest }};
         const filters = {{ filter|safe }};
         const type_filters = {{ type_filters|safe }};
 
@@ -44,7 +47,7 @@
 
     </script>
     <script src={% static 'orchardMap/map.js' %}></script>
-    <script async src={% url 'orchardMap:trees' %}></script>
+    <script async src={% url 'orchardMap:data' %}></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"></script>
 {% endblock js %}
 

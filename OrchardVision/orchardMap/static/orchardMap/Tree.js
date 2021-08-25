@@ -1,11 +1,12 @@
 /// <reference types="../../../../types/google.maps" />
 
 class Tree {
-    constructor(id, type, variant, lat, lng) {
+    constructor(id, type, variant, lat, lng, harvest_time) {
         this.id = id;
         this.type = type;
         this.variant = variant;
         this.pos = {lat: lat, lng: lng};
+        this.harvest_time = harvest_time;
         /** @type { google.maps.Marker } */
         this.marker = null;
 
@@ -14,6 +15,10 @@ class Tree {
 
     applyFilters(filters) {
         this.marker.setVisible(filters[this.type][this.variant])
+
+        if (filter_harvest_time && this.marker.getVisible()) {
+            this.marker.setVisible(filter_harvest_time === this.harvest_time)
+        }
     }
 
     showInfoWindow() {

@@ -129,5 +129,12 @@
 
 #filters label:hover [type="checkbox"]::after {
     opacity: 1;
+}
 
+
+#filters .summary {
+    margin-bottom: 15px;
+}
+#filters .harvest_time {
+    margin-top: 20px;
 }

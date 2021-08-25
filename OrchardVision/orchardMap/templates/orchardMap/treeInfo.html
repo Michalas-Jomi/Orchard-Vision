@@ -1,5 +1,18 @@
 {% extends 'orchardMap/treeForm.html' %}
 
+{% block tableBody %}
+    <tr>
+        <td>
+            Czas zbioru:
+        </td>
+        <td>
+            {{ tree.variant.harvest_time.title|default:"brak informacji" }}
+        </td>
+    </tr>
+    {{ block.super }}
+{% endblock tableBody %}
+
+
 {% block action %}{% url 'broker:editTree' %}{% endblock action %}
 
 {% block type %}

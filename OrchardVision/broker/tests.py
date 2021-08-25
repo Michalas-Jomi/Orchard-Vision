@@ -136,7 +136,6 @@ class viewsUtilsTests(TestCase):
         self.POST = {}
         self.assertRaises(response.Http404, lambda: postFunc(self, 3))
 
-        
 
 class UniversalViewsTests(TestCase):
     def test_initInfo(self):
@@ -255,8 +254,6 @@ class EditViewsTests(TestCase):
         self.assertEqual(edited.start, start.replace(year=2000))
         self.assertEqual(edited.end,   end.replace(year=2000))
 
-
-
 class DeleteViewsTests(TestCase):
     def send(self, id, url, res):
         response = assertRequestCode(self, reverse(url, args=(id,)))
@@ -307,7 +304,6 @@ class DeleteViewsTests(TestCase):
         self.send(harvestTime.id + 1, 'broker:deleteHarvestTime', '0')
         
         self.assertEqual(models.HarvestTime.objects.filter(pk=harvestTime.id).count(), 0)
-
 
 class NewViewsTests(TestCase):
     def test_newType(self):

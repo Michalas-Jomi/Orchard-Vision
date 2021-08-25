@@ -1,3 +1,4 @@
+from django.http import request
 from django.views import generic
 
 import OrchardVision.settings as settings
@@ -30,6 +31,7 @@ class MapView(generic.TemplateView):
         
         context['filter'] = json.dumps(filter)
         context['type_filters'] = json.dumps(type_filters)
+        context['harvest'] = self.request.GET.get('harvest', 'null')
 
         return context
 
@@ -49,8 +51,15 @@ class TreeNew(generic.TemplateView):
 
         return data
 
-class Trees(generic.ListView):
-    template_name = "orchardMap/treesJS.html"
+class Data(generic.ListView):
+    template_name = "orchardMap/dataJS.html"
     content_type = "application/javascript; charset=utf-8"
     context_object_name = "trees"
     model = Tree
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+
+        kwargs['harvests'] = models.HarvestTime.objects.all().order_by('start');
+
+        return kwargs
