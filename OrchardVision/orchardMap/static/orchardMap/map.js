@@ -72,6 +72,17 @@ function centerMap() {
    map.fitBounds(bounds);
 }
 
+function autoSelectHarvestTime(value) {
+   let select = document.getElementById('select_harvestTime_filter');
+   select.childNodes.forEach(child => {
+      if (child.value == value) {
+         child.setAttribute('selected', '');
+      } else {
+         child.removeAttribute('selected');
+      }
+   });
+}
+
 function initFilters() {
    let def = Object.keys(filters).length === 0 && type_filters.length === 0
    trees.forEach(tree => {
@@ -91,6 +102,26 @@ function initFilters() {
          alert('Czynność niedostępna, użyć innej przeglądarki');
    });
    document.getElementById('center_button').addEventListener('click', centerMap);
+   document.getElementById('currentHarvest_button').addEventListener('click', ev => {
+      const now = new Date();
+
+      function finalize() {
+         autoSelectHarvestTime(filter_harvest_time);
+         filter_harvest_time = harvests[filter_harvest_time];
+         applyFilters();
+      }
+
+      for (const id in harvests)
+         if (id == -1)
+            continue;
+         else if (harvests[id].contains(now)) {
+            filter_harvest_time = id;    
+            finalize();
+            return;
+         }
+      filter_harvest_time = -1;
+      finalize();
+   });
 
    /// making view in DOM
    const root = document.getElementById('filters');
@@ -192,6 +223,7 @@ function initFilters() {
    hroot.textContent = "Zbiór:";
 
    let select = hroot.appendChild(document.createElement('select'));
+   select.setAttribute('id', 'select_harvestTime_filter');
    select.classList.add('harvest_time');
    
    // Sorting harvest times
@@ -222,6 +254,11 @@ function initFilters() {
       filter_harvest_time = index == -1 ? null : harvests[index];
       applyFilters();
    })
+
+   // post
+
+   autoSelectHarvestTime(filter_harvest_time);
+   filter_harvest_time = harvests[filter_harvest_time];
 }
 
 var asyncDone = 0;

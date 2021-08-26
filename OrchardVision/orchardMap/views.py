@@ -31,7 +31,7 @@ class MapView(generic.TemplateView):
         
         context['filter'] = json.dumps(filter)
         context['type_filters'] = json.dumps(type_filters)
-        context['harvest'] = self.request.GET.get('harvest', 'null')
+        context['harvest'] = self.request.GET.get('harvest', '-1')
 
         return context
 
